@@ -40,3 +40,15 @@ Node Resource
 Shard Resource
 
     The shard resource TBD.
+
+Stage Resource
+
+    The stage resource TBD
+
+Statement Resource
+
+    The statement resource TBD
+
+Task Resource
+
+    The task resource TBD
