@@ -4,9 +4,26 @@ Node Resource
 
 .. http:get:: /v1/node
    
-   Returns a list of nodes known to a Presto Server.
+   Returns a list of nodes known to a Presto Server.  This call
+   doesn't require a query parameter of headers, it simply returns an
+   array that accounts for each known node in a Presto installation.
 
    **Example response**:
+
+      The following example response displays a single node which has
+      not experienced any failure conditions. Each node also reports
+      statistics about traffic uptime, and failures.
+
+      In this response, the values recentRequests, recentFailures, and
+      recentSuccesses are decaying counters set to decay exponentially
+      over time with a decay parameter of one minute. This decay rate
+      means that if a Presto node has 1000 successes in a few seconds,
+      this statistic value will drop to 367 in one minute.
+
+      Age shows you how long a particular node has been running, and
+      uri points you to the HTTP server for a particular node.  The
+      last request and last response times show you how recently a
+      node has been used.
 
       .. sourcecode:: http
 
@@ -28,7 +45,15 @@ Node Resource
 	   }
 	 ]  
 
+
+      If a node is experiencing errors, you'll see a response that
+      looks like the following.  Here we have a node which has
+      experienced a spate of errors.  The recentFailuresByType field
+      lists the Java exception which have occurred recently on a
+      particular node.
+
       .. sourcecode:: http
+
 
          HTTP/1.1 200 OK
 	 Vry: Accept
@@ -55,9 +80,29 @@ Node Resource
 
 .. http:get:: /v1/node/failed
 
-   Returns a list of nodes that have failed the last heartbeat check.
+   Calling this service returns a JSON document listing all the nodes
+   that have failed the last heartbeat check.  The information
+   returned by this call is the same as the information returned by
+   the previous service.
 
 
       .. sourcecode: http
 
-         [{"uri":"http://10.209.57.156:8080","recentRequests":5.826871111529161,"recentFailures":0.4208416882082422,"recentSuccesses":5.406029423320919,"lastRequestTime":"2013-12-23T02:00:40.382-05:00","lastResponseTime":"2013-12-23T02:00:40.383-05:00","age":"45063192.35ms","recentFailureRatio":0.07222430016952952,"recentFailuresByType":{"java.io.IOException":0.0450492023935578,"java.net.SocketTimeoutException":2.998089068041336E-270,"java.net.ConnectException":0.3757924858146843}}]
+         [
+	    {
+	       "uri":"http://10.209.57.156:8080",
+	       "recentRequests":5.826871111529161,
+	       "recentFailures":0.4208416882082422,
+	       "recentSuccesses":5.406029423320919,
+	       "lastRequestTime":"2013-12-23T02:00:40.382-05:00",
+	       "lastResponseTime":"2013-12-23T02:00:40.383-05:00",
+	       "age":"45063192.35ms",
+	       "recentFailureRatio":0.07222430016952952,
+	       "recentFailuresByType":
+	       {
+	          "java.io.IOException":0.0450492023935578,
+		  "java.net.SocketTimeoutException":2.998089068041336E-270,
+		  "java.net.ConnectException":0.3757924858146843
+	       }
+	    }
+	 ]
