@@ -2,10 +2,10 @@
 Stage Resource
 ==============
 
+.. function:: GET /v1/stage
 
+   Returns detail about a stage in a Presto query.    
 
-Path: /v1/stage
+.. function:: DELETE /v1/stage/{stageId}
 
-
-Method: Delete
-Parameter: stageId
+   Deletes a stage in a Presto query.

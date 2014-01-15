@@ -2,7 +2,7 @@
 Statement Resource
 ==================
 
-.. http::post:: /v1/statement
+.. function:: POST /v1/statement
 
    :query query: SQL Query to execute
    :reqheader X-Presto-User: User to execute statement on behalf of (optional)
@@ -121,7 +121,7 @@ Statement Resource
 	 }
 
 
-.. http::get:: /v1/statement/{queryId}/{token}
+.. function:: GET /v1/statement/{queryId}/{token}
 
    :query queryId: The query identifier returned from the initial POST to /v1/statement
    :query token: The token returned from the initial POST to /v1/statement or from a previous call to this same call
@@ -217,7 +217,7 @@ Statement Resource
 	    }
 	 }
 
-.. http::delete:: /v1/statement/{queryId}/{token}
+.. function:: DELETE /v1/statement/{queryId}/{token}
 
    :query queryId: The query identifier returned from the initial POST to /v1/statement
    :reqheader X-Presto-User: User to execute statement on behalf of (optional)

@@ -7,14 +7,16 @@ contains detailed information about nodes, slices, shards, and other
 details that capture the state and history of a query being executed
 on a Presto installation.
 
-.. http:get:: /v1/query
-
+.. function:: GET /v1/query
 
    This service returns information and statistics about queries that
    are currently being executed on a Presto coordinator.
 
+   When you point a web broswer at a Presto coordinate you'll see a
+   rendered version of the output from this service which will display
+   recent queries that have executed on a Presto installation.
 
-.. http:get:: /v1/query/{queryId}
+.. function:: GET /v1/query/{queryId}
 
    If you are looking to gather very detailed statistics about a
    query, this is the service you would call. If you load the web

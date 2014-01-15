@@ -2,22 +2,26 @@
 Execute Resource
 ================
 
-.. http:post:: /v1/execute
+.. function:: POST /v1/execute
    
-   :query query: SQL Query to execute
-   :reqheader X-Presto-User: User to execute statement on behalf of (optional)
-   :reqheader X-Presto-Source: Source of query
-   :reqheader X-Presto-Catalog: Catalog to execute query against
-   :reqheader X-Presto-Schema: Schema to execute query against
+   :Body: SQL Query to execute
+   :Header "X-Presto-User": User to execute statement on behalf of (optional)
+   :Header "X-Presto-Source": Source of query
+   :Header "X-Presto-Catalog": Catalog to execute query against
+   :Header "X-Presto-Schema": Schema to execute query against
 
    Call this to execute a SQL statement as an alternative to running
-   /v1/statement.  Where /v1/statement will return a nextUri and
-   details about a running query, the /v1/execute call will simple
-   execute the SQL statement posted to it and return the result set.
+   ``/v1/statement``.  Where ``/v1/statement`` will return a
+   ``nextUri`` and details about a running query, the ``/v1/execute``
+   call will simply execute the SQL statement posted to it and return
+   the result set. This service will not return updates about query
+   status or details about stages and tasks. It simply executes a
+   query and returns the result.
 
    The sample request and response shown below demonstrate how the
    execute call works. Once you post a SQL statement to /v1/execute it
-   returns a set of columns describing an array of data items.
+   returns a set of columns describing an array of data items.  This
+   trivial executes a "show functions" statement.
 
    **Example request**:
 

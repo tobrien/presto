@@ -21,7 +21,7 @@ Query
 
 When Presto parses a statement it converts it into a query and creates
 a distributed query plan which is then realized as a series of
-interconnected stages running on Presto Workers. 
+interconnected stages running on Presto Workers.
 
 -------------
 Coordinator
@@ -124,13 +124,24 @@ results of other stages and delivering them to the client.
 Task
 -------------
 
-.. TBD
+A Presto tasks has inputs and outputs and it contains a series of
+operators.  Tasks are the "work horse" in the Presto architecture as a
+distributed query plan is deconstructed into a series of tasks run on
+distributed stages which assemble the operators that act upon splits.
 
 -------------
 Operator
 -------------
 
-.. TBD
+An Operator in Presto encapsulates the functionality of functions and
+other operations which take data as input and generate data as output.
+Operators execute within the context of a task, as a task is simply an
+assembly if different operators which are then applied to individual
+pieces of data within a split.
+
+One of the most critical features of Presto that allows it process
+data so quickly is that several operators have been implemented as JVM
+bytecode
 
 
 -------------

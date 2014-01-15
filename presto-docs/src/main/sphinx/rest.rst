@@ -1,6 +1,6 @@
-************
+***************
 Presto REST API
-************
+***************
 
 This chapter defines the Presto REST API.  Presto uses REST for all
 communication within a Presto installation.  JSON-based REST services
@@ -18,6 +18,8 @@ responses.
     rest/query
     rest/shard
     rest/stage
+    rest/statement
+    rest/task
 
 REST API Overview
 -----------------
