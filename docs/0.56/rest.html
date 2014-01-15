@@ -1,0 +1,131 @@
+
+
+<!DOCTYPE html>
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6. Presto REST API &mdash; Presto 0.56-SNAPSHOT Documentation</title>
+    
+    <link rel="stylesheet" href="_static/presto.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.56-SNAPSHOT',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Presto 0.56-SNAPSHOT Documentation" href="index.html" />
+    <link rel="next" title="6.1. Execute Resource" href="rest/execute.html" />
+    <link rel="prev" title="5.2. Release 0.54" href="release/release-0.54.html" />
+    <meta name='viewport' content='width=device-width'>
+    <meta property='og:type' content='website' />
+    <meta property='og:title' content='Presto | A Distributed SQL Query Engine for Big Data' />
+    <meta property='og:image' content='_static/presto_og.png' />
+    <meta property='og:description' content='A Distributed SQL Query Engine for Big Data' />
+
+  </head>
+  <body>
+<header class='topbar clearfix'>
+  <nav class='width'>
+    <h1>Presto</h1>
+  </nav>
+</header>
+
+<header class='hero clearfix'>
+    <div class="width">
+        <h1>Presto 0.56-SNAPSHOT Documentation</h1>
+    </div>
+</header>
+<div class="topnav width">
+    
+<p class="nav">
+    <span class="left">
+        &laquo; <a href="release/release-0.54.html">5.2. Release 0.54</a>
+    </span>
+    <span class="right">
+        <a href="rest/execute.html">6.1. Execute Resource</a> &raquo;
+    </span>
+</p>
+
+</div>
+<div class="content width">
+    
+  <div class="section" id="presto-rest-api">
+<h1>6. Presto REST API</h1>
+<p>This chapter defines the Presto REST API.  Presto uses REST for all
+communication within a Presto installation.  JSON-based REST services
+facilitate communication between the client and the Presto coordinator
+as well as for communicate between a Presto coordinator and multiple
+Presto workers.  In this chapter you will find detailed descriptions
+of the APIs offered by Presto as well as example requests and
+responses.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="rest/execute.html">6.1. Execute Resource</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest/node.html">6.2. Node Resource</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest/query.html">6.3. Query Resource</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest/shard.html">6.4. Shard Resource</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest/stage.html">6.5. Stage Resource</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest/statement.html">6.6. Statement Resource</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest/task.html">6.7. Task Resource</a></li>
+</ul>
+</div>
+<div class="section" id="rest-api-overview">
+<h2>6.8. REST API Overview</h2>
+<p>Just about everything in Presto is exposed as a REST API.</p>
+<p>Execute Resource</p>
+<blockquote>
+<div>The execute resource is what the client sends queries to.  It is available at the path <tt class="docutils literal"><span class="pre">/v1/execute</span></tt>, accepts a query as a POST and returns JSON.</div></blockquote>
+<p>Query Resource</p>
+<blockquote>
+<div>The query resource takes a SQL query.  It is available at the path <tt class="docutils literal"><span class="pre">/v1/query</span></tt> and accepts several HTTP methods.</div></blockquote>
+<p>Node Resource</p>
+<blockquote>
+<div>The node resource returns information about worker nodes in a Presto installation.  It is available at the path <tt class="docutils literal"><span class="pre">/v1/node</span></tt>.</div></blockquote>
+<p>Shard Resource</p>
+<blockquote>
+<div>The shard resource TBD.</div></blockquote>
+<p>Stage Resource</p>
+<blockquote>
+<div>The stage resource TBD</div></blockquote>
+<p>Statement Resource</p>
+<blockquote>
+<div>The statement resource TBD</div></blockquote>
+<p>Task Resource</p>
+<blockquote>
+<div>The task resource TBD</div></blockquote>
+</div>
+</div>
+
+
+</div>
+<div class="bottomnav width">
+    
+<p class="nav">
+    <span class="left">
+        &laquo; <a href="release/release-0.54.html">5.2. Release 0.54</a>
+    </span>
+    <span class="right">
+        <a href="rest/execute.html">6.1. Execute Resource</a> &raquo;
+    </span>
+</p>
+
+</div>
+
+    <div class="footer">
+        &copy; Copyright 2013, Facebook.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

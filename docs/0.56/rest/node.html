@@ -1,0 +1,174 @@
+
+
+<!DOCTYPE html>
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6.2. Node Resource &mdash; Presto 0.56-SNAPSHOT Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/presto.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.56-SNAPSHOT',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Presto 0.56-SNAPSHOT Documentation" href="../index.html" />
+    <link rel="up" title="6. Presto REST API" href="../rest.html" />
+    <link rel="next" title="6.3. Query Resource" href="query.html" />
+    <link rel="prev" title="6.1. Execute Resource" href="execute.html" />
+    <meta name='viewport' content='width=device-width'>
+    <meta property='og:type' content='website' />
+    <meta property='og:title' content='Presto | A Distributed SQL Query Engine for Big Data' />
+    <meta property='og:image' content='../_static/presto_og.png' />
+    <meta property='og:description' content='A Distributed SQL Query Engine for Big Data' />
+
+  </head>
+  <body>
+<header class='topbar clearfix'>
+  <nav class='width'>
+    <h1>Presto</h1>
+  </nav>
+</header>
+
+<header class='hero clearfix'>
+    <div class="width">
+        <h1>Presto 0.56-SNAPSHOT Documentation</h1>
+    </div>
+</header>
+<div class="topnav width">
+    
+<p class="nav">
+    <span class="left">
+        &laquo; <a href="execute.html">6.1. Execute Resource</a>
+    </span>
+    <span class="right">
+        <a href="query.html">6.3. Query Resource</a> &raquo;
+    </span>
+</p>
+
+</div>
+<div class="content width">
+    
+  <div class="section" id="node-resource">
+<h1>6.2. Node Resource</h1>
+<dl class="function">
+<dt>
+<tt class="descname">GET /v1/node</tt></dt>
+<dd><p>Returns a list of nodes known to a Presto Server.  This call
+doesn&#8217;t require a query parameter of headers, it simply returns an
+array that accounts for each known node in a Presto installation.</p>
+<p>In the response, the values <tt class="docutils literal"><span class="pre">recentRequests</span></tt>, <tt class="docutils literal"><span class="pre">recentFailures</span></tt>,
+and <tt class="docutils literal"><span class="pre">recentSuccesses</span></tt> are decaying counters set to decay
+exponentially over time with a decay parameter of one minute. This
+decay rate means that if a Presto node has 1000 successes in a few
+seconds, this statistic value will drop to 367 in one minute.</p>
+<p><tt class="docutils literal"><span class="pre">age</span></tt> shows you how long a particular node has been running, and uri
+points you to the HTTP server for a particular node.  The last
+request and last response times show you how recently a node has
+been used.</p>
+<p>The following example response displays a single node which has not
+experienced any failure conditions. Each node also reports
+statistics about traffic uptime, and failures.</p>
+<p><strong>Example response</strong>:</p>
+<blockquote>
+<div><div class="highlight-http"><div class="highlight"><pre><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/javascript</span>
+
+<span class="p">[</span>
+  <span class="p">{</span>
+    <span class="s2">&quot;uri&quot;</span><span class="o">:</span><span class="s2">&quot;http://10.209.57.156:8080&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;recentRequests&quot;</span><span class="o">:</span><span class="mf">25.181940555111073</span><span class="p">,</span>
+    <span class="s2">&quot;recentFailures&quot;</span><span class="o">:</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;recentSuccesses&quot;</span><span class="o">:</span><span class="mf">25.195472984170983</span><span class="p">,</span>
+    <span class="s2">&quot;lastRequestTime&quot;</span><span class="o">:</span><span class="s2">&quot;2013-12-22T13:32:44.673-05:00&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;lastResponseTime&quot;</span><span class="o">:</span><span class="s2">&quot;2013-12-22T13:32:44.677-05:00&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;age&quot;</span><span class="o">:</span><span class="s2">&quot;14155.28ms&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;recentFailureRatio&quot;</span><span class="o">:</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;recentFailuresByType&quot;</span><span class="o">:</span><span class="p">{}</span>
+  <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>If a node is experiencing errors, you&#8217;ll see a response that looks
+like the following.  Here we have a node which has experienced a
+spate of errors.  The recentFailuresByType field lists the Java
+exception which have occurred recently on a particular node.</p>
+<p><strong>Example response with Errors</strong>:</p>
+<blockquote>
+<div><div class="highlight-http"><div class="highlight"><pre><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vry</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/javascript</span>
+
+<span class="p">[</span>
+  <span class="p">{</span>
+    <span class="s2">&quot;uri&quot;</span><span class="o">:</span><span class="s2">&quot;http://10.209.57.156:8080&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;recentRequests&quot;</span><span class="o">:</span><span class="mf">117.0358348572745</span><span class="p">,</span>
+    <span class="s2">&quot;recentFailures&quot;</span><span class="o">:</span><span class="mf">8.452831267323281</span><span class="p">,</span>
+    <span class="s2">&quot;recentSuccesses&quot;</span><span class="o">:</span><span class="mf">108.58300358995123</span><span class="p">,</span>
+    <span class="s2">&quot;lastRequestTime&quot;</span><span class="o">:</span><span class="s2">&quot;2013-12-23T02:00:40.382-05:00&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;lastResponseTime&quot;</span><span class="o">:</span><span class="s2">&quot;2013-12-23T02:00:40.383-05:00&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;age&quot;</span><span class="o">:</span><span class="s2">&quot;44882391.57ms&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;recentFailureRatio&quot;</span><span class="o">:</span><span class="mf">0.07222430016952953</span><span class="p">,</span>
+    <span class="s2">&quot;recentFailuresByType&quot;</span><span class="o">:</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;java.io.IOException&quot;</span><span class="o">:</span><span class="mf">0.9048374180359595</span><span class="p">,</span>
+      <span class="s2">&quot;java.net.SocketTimeoutException&quot;</span><span class="o">:</span><span class="mf">6.021822867514955</span><span class="nx">E</span><span class="o">-</span><span class="mi">269</span><span class="p">,</span>
+      <span class="s2">&quot;java.net.ConnectException&quot;</span><span class="o">:</span><span class="mf">7.54799384928732</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">GET /v1/node/failed</tt></dt>
+<dd><p>Calling this service returns a JSON document listing all the nodes
+that have failed the last heartbeat check.  The information
+returned by this call is the same as the information returned by
+the previous service.</p>
+<p><strong>Example response</strong>:</p>
+<blockquote>
+<div></div></blockquote>
+</dd></dl>
+
+</div>
+
+
+</div>
+<div class="bottomnav width">
+    
+<p class="nav">
+    <span class="left">
+        &laquo; <a href="execute.html">6.1. Execute Resource</a>
+    </span>
+    <span class="right">
+        <a href="query.html">6.3. Query Resource</a> &raquo;
+    </span>
+</p>
+
+</div>
+
+    <div class="footer">
+        &copy; Copyright 2013, Facebook.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

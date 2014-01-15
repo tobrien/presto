@@ -1,0 +1,164 @@
+
+
+<!DOCTYPE html>
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6.3. Query Resource &mdash; Presto 0.56-SNAPSHOT Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/presto.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.56-SNAPSHOT',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Presto 0.56-SNAPSHOT Documentation" href="../index.html" />
+    <link rel="up" title="6. Presto REST API" href="../rest.html" />
+    <link rel="next" title="6.4. Shard Resource" href="shard.html" />
+    <link rel="prev" title="6.2. Node Resource" href="node.html" />
+    <meta name='viewport' content='width=device-width'>
+    <meta property='og:type' content='website' />
+    <meta property='og:title' content='Presto | A Distributed SQL Query Engine for Big Data' />
+    <meta property='og:image' content='../_static/presto_og.png' />
+    <meta property='og:description' content='A Distributed SQL Query Engine for Big Data' />
+
+  </head>
+  <body>
+<header class='topbar clearfix'>
+  <nav class='width'>
+    <h1>Presto</h1>
+  </nav>
+</header>
+
+<header class='hero clearfix'>
+    <div class="width">
+        <h1>Presto 0.56-SNAPSHOT Documentation</h1>
+    </div>
+</header>
+<div class="topnav width">
+    
+<p class="nav">
+    <span class="left">
+        &laquo; <a href="node.html">6.2. Node Resource</a>
+    </span>
+    <span class="right">
+        <a href="shard.html">6.4. Shard Resource</a> &raquo;
+    </span>
+</p>
+
+</div>
+<div class="content width">
+    
+  <div class="section" id="query-resource">
+<h1>6.3. Query Resource</h1>
+<p>The Query REST service is the most complex of the rest services.  It
+contains detailed information about nodes, slices, shards, and other
+details that capture the state and history of a query being executed
+on a Presto installation.</p>
+<dl class="function">
+<dt>
+<tt class="descname">GET /v1/query</tt></dt>
+<dd><p>This service returns information and statistics about queries that
+are currently being executed on a Presto coordinator.</p>
+<p>When you point a web broswer at a Presto coordinate you&#8217;ll see a
+rendered version of the output from this service which will display
+recent queries that have executed on a Presto installation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">GET /v1/query/{queryId}</tt></dt>
+<dd><p>If you are looking to gather very detailed statistics about a
+query, this is the service you would call. If you load the web
+interface of a Presto coordinator you will see a list of current
+queries.  Click on a query will reveal a link to this service.  If
+you click on this service you should be prepared to see details
+that will cover all of the stages, tasks, and operators that are
+involved in a Presto query.</p>
+<p><strong>Example response</strong>:</p>
+<blockquote>
+<div><div class="highlight-http"><pre>{
+   "queryId" : "20131229_211533_00017_dk5x2",
+   "session" : {
+      "user" : "tobrien",
+      "source" : "presto-cli",
+      "catalog" : "jmx",
+      "schema" : "jmx",
+      "remoteUserAddress" : "173.15.79.89",
+      "userAgent" : "StatementClient/0.55-SNAPSHOT",
+      "startTime" : 1388351852026
+   },
+   "state" : "FINISHED",
+   "self" : "http://10.193.207.128:8080/v1/query/20131229_211533_00017_dk5x2",
+   "fieldNames" : [ "name" ],
+   "query" : "select name from \"java.lang:type=runtime\"",
+   "queryStats" : {
+      "createTime" : "2013-12-29T16:17:32.027-05:00",
+      "executionStartTime" : "2013-12-29T16:17:32.086-05:00",
+      "lastHeartbeat" : "2013-12-29T16:17:44.561-05:00",
+      "endTime" : "2013-12-29T16:17:32.152-05:00",
+      "elapsedTime" : "125.00ms",
+      "queuedTime" : "1.31ms",
+      "analysisTime" : "4.84ms",
+      "distributedPlanningTime" : "353.00us",
+      "totalTasks" : 2,
+      "runningTasks" : 0,
+      "completedTasks" : 2,
+      "totalDrivers" : 2,
+      "queuedDrivers" : 0,
+      "runningDrivers" : 0,
+      "completedDrivers" : 2,
+      "totalMemoryReservation" : "0B",
+      "totalScheduledTime" : "5.84ms",
+      "totalCpuTime" : "710.49us",
+      "totalUserTime" : "0.00ns",
+      "totalBlockedTime" : "27.38ms",
+      "rawInputDataSize" : "27B",
+      "rawInputPositions" : 1,
+      "processedInputDataSize" : "32B",
+      "processedInputPositions" : 1,
+      "outputDataSize" : "32B",
+      "outputPositions" : 1
+   },
+   "outputStage" : ...
+}</pre>
+</div>
+</div></blockquote>
+</dd></dl>
+
+</div>
+
+
+</div>
+<div class="bottomnav width">
+    
+<p class="nav">
+    <span class="left">
+        &laquo; <a href="node.html">6.2. Node Resource</a>
+    </span>
+    <span class="right">
+        <a href="shard.html">6.4. Shard Resource</a> &raquo;
+    </span>
+</p>
+
+</div>
+
+    <div class="footer">
+        &copy; Copyright 2013, Facebook.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

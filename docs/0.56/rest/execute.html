@@ -1,0 +1,163 @@
+
+
+<!DOCTYPE html>
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6.1. Execute Resource &mdash; Presto 0.56-SNAPSHOT Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/presto.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.56-SNAPSHOT',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Presto 0.56-SNAPSHOT Documentation" href="../index.html" />
+    <link rel="up" title="6. Presto REST API" href="../rest.html" />
+    <link rel="next" title="6.2. Node Resource" href="node.html" />
+    <link rel="prev" title="6. Presto REST API" href="../rest.html" />
+    <meta name='viewport' content='width=device-width'>
+    <meta property='og:type' content='website' />
+    <meta property='og:title' content='Presto | A Distributed SQL Query Engine for Big Data' />
+    <meta property='og:image' content='../_static/presto_og.png' />
+    <meta property='og:description' content='A Distributed SQL Query Engine for Big Data' />
+
+  </head>
+  <body>
+<header class='topbar clearfix'>
+  <nav class='width'>
+    <h1>Presto</h1>
+  </nav>
+</header>
+
+<header class='hero clearfix'>
+    <div class="width">
+        <h1>Presto 0.56-SNAPSHOT Documentation</h1>
+    </div>
+</header>
+<div class="topnav width">
+    
+<p class="nav">
+    <span class="left">
+        &laquo; <a href="../rest.html">6. Presto REST API</a>
+    </span>
+    <span class="right">
+        <a href="node.html">6.2. Node Resource</a> &raquo;
+    </span>
+</p>
+
+</div>
+<div class="content width">
+    
+  <div class="section" id="execute-resource">
+<h1>6.1. Execute Resource</h1>
+<dl class="function">
+<dt>
+<tt class="descname">POST /v1/execute</tt></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Body :</th><td class="field-body">SQL Query to execute</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Header &#8220;X-Presto-User&#8221;:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">User to execute statement on behalf of (optional)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Header &#8220;X-Presto-Source&#8221;:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">Source of query</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Header &#8220;X-Presto-Catalog&#8221;:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">Catalog to execute query against</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Header &#8220;X-Presto-Schema&#8221;:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">Schema to execute query against</td>
+</tr>
+</tbody>
+</table>
+<p>Call this to execute a SQL statement as an alternative to running
+<tt class="docutils literal"><span class="pre">/v1/statement</span></tt>.  Where <tt class="docutils literal"><span class="pre">/v1/statement</span></tt> will return a
+<tt class="docutils literal"><span class="pre">nextUri</span></tt> and details about a running query, the <tt class="docutils literal"><span class="pre">/v1/execute</span></tt>
+call will simply execute the SQL statement posted to it and return
+the result set. This service will not return updates about query
+status or details about stages and tasks. It simply executes a
+query and returns the result.</p>
+<p>The sample request and response shown below demonstrate how the
+execute call works. Once you post a SQL statement to /v1/execute it
+returns a set of columns describing an array of data items.  This
+trivial executes a &#8220;show functions&#8221; statement.</p>
+<p><strong>Example request</strong>:</p>
+<blockquote>
+<div><div class="highlight-http"><div class="highlight"><pre><span class="nf">POST</span> <span class="nn">/v1/execute</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">localhost:8001</span>
+<span class="na">X-Presto-Schema</span><span class="o">:</span> <span class="l">jmx</span>
+<span class="na">X-Presto-User</span><span class="o">:</span> <span class="l">tobrie1</span>
+<span class="na">X-Presto-Catalog</span><span class="o">:</span> <span class="l">jmx</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/html</span>
+<span class="na">Content-Length</span><span class="o">:</span> <span class="l">14</span>
+
+show functions
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>Example response</strong>:</p>
+<blockquote>
+<div><div class="highlight-http"><pre>HTTP/1.1 200 OK
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+Transfer-Encoding: chunked
+
+{"columns":
+   [
+      {"name":"Function","type":"varchar"},
+      {"name":"Return Type","type":"varchar"},
+      {"name":"Argument Types","type":"varchar"},
+      {"name":"Function Type","type":"varchar"},
+      {"name":"Description","type":"varchar"}
+   ],
+"data":
+   [
+      ["abs","bigint","bigint","scalar","absolute value"],
+      ["abs","double","double","scalar","absolute value"],
+      ...
+   ]
+};</pre>
+</div>
+</div></blockquote>
+</dd></dl>
+
+</div>
+
+
+</div>
+<div class="bottomnav width">
+    
+<p class="nav">
+    <span class="left">
+        &laquo; <a href="../rest.html">6. Presto REST API</a>
+    </span>
+    <span class="right">
+        <a href="node.html">6.2. Node Resource</a> &raquo;
+    </span>
+</p>
+
+</div>
+
+    <div class="footer">
+        &copy; Copyright 2013, Facebook.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
