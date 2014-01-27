@@ -24,33 +24,58 @@ responses.
 REST API Overview
 -----------------
 
-Just about everything in Presto is exposed as a REST API. 
+In Presto, everything is exposed as a REST API in Presto and HTTP is
+the method by which all component communicate with each other. The
+Presto client interacts with a Presto coordinator via the REST API,
+the Presto coordinator creates the stages of a query using the REST
+API, and data is retrieved using the REST API.
+
+The Presto REST API contains several, high-level resources that
+correspond to the components of a Presto installation.
 
 
 Execute Resource
 
-    The execute resource is what the client sends queries to.  It is available at the path ``/v1/execute``, accepts a query as a POST and returns JSON.
+    The execute resource is what the client sends queries to.  It is
+    available at the path ``/v1/execute``, accepts a query as a POST
+    and returns JSON.
 
 Query Resource
 
-    The query resource takes a SQL query.  It is available at the path ``/v1/query`` and accepts several HTTP methods.
+    The query resource takes a SQL query.  It is available at the path
+    ``/v1/query`` and accepts several HTTP methods.
 
 Node Resource
 
-    The node resource returns information about worker nodes in a Presto installation.  It is available at the path ``/v1/node``.
+    The node resource returns information about worker nodes in a
+    Presto installation.  It is available at the path ``/v1/node``.
 
 Shard Resource
 
-    The shard resource TBD.
+    In Presto, large data sets are divided into a series of shards
+    which are then distributed among a collection of stages in a
+    running query. The shard resource is used by a Presto coordinator
+    and by Presto workers to gather information about shards involved
+    in a query.
 
 Stage Resource
 
-    The stage resource TBD
+    When a Presto coordinator receives a query it creates distribute
+    system of stages which collaborate with one another to execute a
+    query. The Stage resource is used by the coordinator to create a
+    network of corresponding stages.  It is also used by stages to
+    coordinate with one another.
 
 Statement Resource
 
-    The statement resource TBD
+    This is the standard resource used by the client to execute a
+    statement.  When executing a statement, the Presto client will
+    call this resource repeatedly to get the status of an ongoing
+    statement execution as well as the results of a completed
+    statement.
 
 Task Resource
 
-    The task resource TBD
+    A stage contains a number of components, one of which is a
+    task. This resource is used by internal components to coordinate
+    the execution of stages.
