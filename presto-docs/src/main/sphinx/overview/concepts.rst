@@ -20,43 +20,16 @@ This section provides a solid definition for the core concepts
 referenced throughout Presto, and these sections are sorted from most
 general to most specific.
 
--------------
-Statement
--------------
+--------------
+Presto Servers
+--------------
 
-Presto executes ANSI-compatible SQL statements.  When Presto
-documentation refers to a statement we are refering to statements as
-defined in the ANSI SQL standard which consists of clauses,
-expressions, and predicates.
+There are two types of Presto servers: coordinators and workers. The
+following section explains the difference between the two.
 
-Some readers might be curious why this section lists seperate concepts
-for statements and queries. This is necessary because, in Presto,
-statements simply refer to the textual representation of a SQL
-statement. When a statement is executed, Presto creates a query along
-with a query plan that is then distributed across a series of Presto
-workers.
-
--------------
-Query
--------------
-
-When Presto parses a statement it converts it into a query and creates
-a distributed query plan which is then realized as a series of
-interconnected stages running on Presto Workers. When you retrieve
-information about a query in Presto, you receive a snapshot of every
-component that is involved in producing a result set in response to a
-statement.
-
-The difference between a statement and a query is simple. A statement
-can be thought of as the string that is passed to Presto while a query
-refers to the configuration and components instantiated to execute
-that statement. A query encompasses stages, tasks, splits, catalogs,
-and other components and data sources working in concert to produce a
-result.
-
--------------
+^^^^^^^^^^^
 Coordinator
--------------
+^^^^^^^^^^^
 
 The Presto coordinator is a server that is responsible for parsing
 statements, planning queries, and managing Presto worker nodes.  It is
@@ -74,9 +47,9 @@ Presto workers.
 Coordinators communicate with both workers and clients using a REST
 API.
 
--------------
+^^^^^^
 Worker
--------------
+^^^^^^
 
 A Presto worker is a server in a Presto installation which is
 responsible for executing tasks and processing data. Worker nodes
@@ -93,33 +66,24 @@ task execution.
 Workers communicate with both other workers and Presto coordinators
 using a REST API.
 
--------------
-Catalog
--------------
-	
-A Presto Catalog is related to a connector which connects Presto
-specific type of data source.  For example, the JMX catalog is a
-built-in catalog in Presto which provides access to JMX information
-via a JMX connector.  When you run a SQL statement in Presto, you are
-running it against a catalog.  Other examples of catalogs include the
-hive catalog to connect to a Hive data source.
+----------------------------
+Presto Data Source Concepts
+----------------------------
 
-Catalogs are defined in properties files stored in the Presto
-configuration directory, and they correspond to technologies.
+Throughout this documentation you'll read terms such as connector,
+catalog, schema, and table. These fundamental concepts cover Presto's
+model of a particular data source and are described in the following
+section.
 
-When addressing a table in Presto, one should use the fully-qualified table name. This name is a combination of the catalog, the project, and an identifer.
-
-PRE-NOTE: Explain Fully Qualified name - catalog.schema.table...
-
--------------
+^^^^^^^^^
 Connector
--------------
+^^^^^^^^^
 
-A connector adapts Presto to a source of data, and every catalog is
-associated with a specific connector.  You can think of a connector
-the same way you think of a driver for a database. It is an
-implementation of Presto's SPI which allows Presto to interact with a
-resource using a standard API.
+A connector adapts Presto to a data source such as Hive or a
+relational database. You can think of a connector the same way you
+think of a driver for a database. It is an implementation of Presto's
+SPI which allows Presto to interact with a resource using a standard
+API.
 
 Presto contains several built-in connectors including a connector for
 JMX, a "system" connector which provides access to built-in system
@@ -128,20 +92,44 @@ connector, and a connector designed to serve TPC-H benchmark
 data. Many third-party developers have contributed connectors so that
 Presto can access data in a variety of data sources.
 
+Every catalog is associated with a specific connector.  If you examine
+a catalog configuration file, you will see that each contains a
+mandatory property "connector.name" which is used by the Catalog
+manager to create a connector for a given catalog. While there is a
+one to one association with a catalog and a connector, it is possible
+to have more than one catalog use the same connector to access two
+different instances of a similar database. For example, if you have
+two Hive clusters, you can configure two catalogs which use the Hive
+connector to query data from either database.
 
+^^^^^^^
+Catalog
+^^^^^^^
 
-If you examine a catalog configuration file, you will see that each
-contains a mandatory property "connector.name" which is used by the
-Catalog manager to create a connector for a given catalog. While there
-is a one to one association with a catalog and a connector, it is
-possible to have more than one catalog use the same connector to
-access two different instances of a similar database. For example, if
-you have two Hive clusters, you can configure two catalogs which use
-the Hive connector to query data from either database.
+A Presto catalog contains schemas and references a data source via a
+connector.  For example, the JMX catalog is a built-in catalog in
+Presto which provides access to JMX information via a JMX connector.
+When you run a SQL statement in Presto, you are running it against a
+catalog.  Other examples of catalogs include the hive catalog to
+connect to a Hive data source.
 
--------------
+When addressing a table in Presto, the fully-qualified table name is
+always rooted in a catalog. For example, a fully-qualified table name
+of "hive.test_data.test" would refer to the test table in the
+test_data schema in the hive catalog.
+
+Catalogs are defined in properties files stored in the Presto
+configuration directory.
+
+^^^^^^
 Schema
--------------
+^^^^^^
+
+A schema is grouping of tables. Think of a traditional relational
+database such as Postgresql, MySQL, or Oracle. Each one of those
+database products has the concept of a schema and a Presto schema maps
+to the same concept. Tables are grouped into schemas to organize
+tables into schemas which share a common purpose.
 
 A Catalog and Schema together define a set of tables that can be
 queried.  When accessing Hive or a relational database with Presto, a
@@ -150,127 +138,169 @@ accessing a catalog such as JMX, schema simply refers to a set of
 tables used to represent JMX information and does not directly
 correspond to a similar concept in the underlying technology.
 
-Grouping of tables.
+^^^^^
+Table
+^^^^^
 
-FUTURE: Bind a schema from one catalog to another.  Create a virtual catalog, binding things in.
+Presto's concept of a table isn't too different from a table in a
+relational database.  A table contains rows which have data in a
+series of named columns.
 
--------------
+------------------
+Presto Query Model
+------------------
+
+Presto executes SQL statements and turns these statements into queries
+that are executed across a distributed network of coordinators and
+workers.
+
+^^^^^^^^^
+Statement
+^^^^^^^^^
+
+Presto executes ANSI-compatible SQL statements.  When Presto
+documentation refers to a statement we are refering to statements as
+defined in the ANSI SQL standard which consists of clauses,
+expressions, and predicates.
+
+Some readers might be curious why this section lists seperate concepts
+for statements and queries. This is necessary because, in Presto,
+statements simply refer to the textual representation of a SQL
+statement. When a statement is executed, Presto creates a query along
+with a query plan that is then distributed across a series of Presto
+workers.
+
+^^^^^
+Query
+^^^^^
+
+When Presto parses a statement it converts it into a query and creates
+a distributed query plan which is then realized as a series of
+interconnected stages running on Presto Workers. When you retrieve
+information about a query in Presto, you receive a snapshot of every
+component that is involved in producing a result set in response to a
+statement.
+
+The difference between a statement and a query is simple. A statement
+can be thought of as the string that is passed to Presto while a query
+refers to the configuration and components instantiated to execute
+that statement. A query encompasses stages, tasks, splits, catalogs,
+and other components and data sources working in concert to produce a
+result.
+
+^^^^^
 Stage
--------------
+^^^^^
 
-When Presto executes a statement it does do by breaking up the
-execution into a hierarchy of stages.  For example, if Presto needs to
-aggregate data from one billion rows stored in Hive it does so by
-creating a root stage to aggregate the output of several other stages
-all of which are designed to operate on specific portions of that data
-set.  What differentiates Presto from Hive is that this processing is
-being done in parallel and intermediate output between stages is
-stored in memory and retrieved from a parent stage.
+When Presto executes a query it does do by breaking up the execution
+into a hierarchy of stages.  For example, if Presto needs to aggregate
+data from one billion rows stored in Hive it does so by creating a
+root stage to aggregate the output of several other stages all of
+which are designed to implement different sections of a distributed
+query plan.
 
-As mentioned previously, every query in Presto is executed on a
-hierarchy of stages which resembles a tree.  Every query has a "root"
-stage which is responsible for aggregating the output from other
-stages executing on a network of Presto workers.
+What differentiates Presto from Hive is that this processing is being
+done in parallel and intermediate output between stages is stored in
+memory and retrieved from a parent stage.  Unlike Hive, Presto doesn't
+translate a SQL statement to a set of Map Reduce steps and expensive,
+intermediate I/O. The query is split up into several stages which are
+designed to run in parallel with the rest of the query.
 
-Stages can be in number of different states captured in the following
-list:
+The hierarchy of stages that comprises a query resembles a tree.
+Every query has a "root" stage which is responsible for aggregating
+the output from other stages. Stages are what the coordinator uses to
+model a distributed query plan, but stages themselves don't run on
+Presto workers.
 
-* Planned
-* Scheduling
-* Scheduled
-* Running
-* Finished
-* Canceled
-* Failed
+Note: If you are a Presto end-user, everything beyond Stage in this
+section isn't necessary to understand how Presto works from an
+end-user perspective.
 
-Stages have input positions and output positions they contain tasks
-which assemble operators together and drivers which drive input in the
-form of splits to these operators.  If it helps to imagine it as such
-a Stage can be thought of a preconfigure "machine" that accepts inputs
-and then drives outputs to other stages higher in a tree of stages.
-The top-most stage in this tree is responsible for aggregating the
-results of other stages and delivering them to the client.
+^^^^^^^^
+Exchange
+^^^^^^^^
 
-NOTE: Single execution plan for a stage.  One or more machines that execute that plan.
+Stages connect to one another using an exchange. An exchange is
+responsible for receiving and transporting data from one stage to
+another and for interacting with other stages to retrieve data.  A
+stage that produces data has an exchange called an output buffer, and
+a stage that consumes data has an exchange called an exchange client.
 
-NOTE: Stage is a coordinator concept.   Tasks are the manifestation of the parallel stage.
+Note that when data is retrieved from the lowest level stage directly
+from a connector, this interaction between a stage and a connector
+uses an operator called a source operator.  For example, if a stage
+retrieves data from HDFS, this isn't performed with an exchange
+client, the retrieval happens from a source operator running in a
+driver.
 
--------------
+^^^^
 Task
--------------
+^^^^
 
+As mentioned in the previous section, stages model a particular
+section of a distributed query plan, but stages themselves don't
+execute on Presto workers.  To understand how a stage is executed,
+you'll need to understand that a stage is implemented as a series of
+tasks distributed over a network of Presto workers.
 
+Tasks are the "work horse" in the Presto architecture as a distributed
+query plan is deconstructed into a series of stages which are then
+translated to tasks which then act upon or process splits. A Presto
+task has inputs and outputs , and just as a stage can be executed in
+parallel by a series of tasks, a task is executing in parallel with a
+series of drivers.
 
-A Presto tasks has inputs and outputs and it contains a series of
-operators.  Tasks are the "work horse" in the Presto architecture as a
-distributed query plan is deconstructed into a series of tasks run on
-distributed stages which assemble the operators that act upon splits.
+^^^^^^
+Driver
+^^^^^^
 
-TASKS are also executing things in parallel.
+Tasks contain one or more parallel drivers. Drivers act upon data and
+combine operators to produce output that is then aggregated by a task
+and then delivered to another task in a another stage. A driver is a
+sequence of operator instances, or you can think of a driver as a
+physical set of operators in memory.  It is the lowest level of
+parallelism in the Presto architecture.  A driver has one input and
+one output.
 
--------------
+^^^^^^^^
 Operator
--------------
+^^^^^^^^
 
 An Operator in Presto encapsulates the functionality of functions and
 other operations which take data as input and generate data as output.
-Operators execute within the context of a task, as a task is simply an
-assembly if different operators which are then applied to individual
+Operators execute within a driver as a driver is simply an
+assembly of different operators which are then applied to individual
 pieces of data within a split.
 
 One of the most critical features of Presto that allows it process
 data so quickly is that several operators have been implemented as JVM
-bytecode
+bytecode.
 
-NOTE: A sequence of operator instances for a driver.  A driver is a physical set of operators in memory.  A driver is like the lowest level of parallelism.   A driver has one input and one output.    InputOperator, moves through the 
-
-NOTE: Stages are connected together using an exchange.  On the producer side there is an output buffer.  On the receiver side there is an exchange client.
-
-
--------------
-Driver
--------------
-
-NOTES: Query has stages and a stage has tasks.  Distributed execution plan.  System spreads the work over a bunch of workers.  Work in concert to process query.  the task has a similar kind of plan, but its a parallel plan where its going to divide the work 
-
-
-A Driver is a low-level object responsible for driving input
-to a stage.  Think of a driver as a component that is keeping an eye
-on a task in a Stage. Once this tasks needs more input, it is the
-driver's responsibility to drive input (in the form of splits) to
-operators in a task.
-
--------------
+^^^^^
 Split
--------------
+^^^^^
 
-Tasks operate on splits, and splits are portions of a larger data
+Tasks operate on splits, and splits are sections of larger data
 set. Take the following as an example, if you are attempting to
 aggregate several billion rows from Hive, Presto will create a
 hierarchy of stages and begin to disribute chunks of data to each
 stage.  These chunks of data are known as splits and each stage is
-responsible for retrieving one or more splits from an underlying data
-source.
+responsible for retrieving one or more splits from a connector using
+an exchange client.
 
-NOTE: A split represents a chunk of data to be processed.   there are intermediate stages.  You read and filtuer data there's a stage above it that doesn't have splits.
+Stages at the lowest level of a distributed query plan retrieve splits
+from connectors, and intermediate stages at a higher level of a
+distributed query plan are designed to retrieve data from other
+stages.
 
-The connector (MISSING) there's a part of the query scheduling where it the coordinator asks the ocnnector what are all the splits for this table.  And the system returns a stream of all of the splits.
-
-The connector can have access to all of the machines that are available
-
-For the bottom operators where you are reading data from the connectors.   Source operator - not exchange.  I want to go and fetch this.   Read this file in HDFS stating at this offset. 
-
-
-Intermediate 
-
-
-
-A stage has spits and then those spits are assigned to tasks.  To execute those splits a task has to be created on a machine.
+When Presto is scheduling a query, the coordinator will query a
+connector for a list of all splits that are available for a table.
+The connector will then stream all splits to the coordinator which is
+then responsible for assigning splits to tasks. The coordinator keeps
+track of which machines are running which tasks and what splits are
+being processed by which tasks.
 
 
-Coordinator gets the splits and then it doles them out to tasks.  The coordinator decides this split is going to run on this machine.    the creation and assignment are two separate events  - splits to tasks.
+.. NOTE: Chapter for Connectors
 
-
-NOTE: Chapter for Connectors
-
-NOTE: Explain how to use the Cassandra connector
+.. NOTE: Explain how to use the Cassandra connector
