@@ -122,6 +122,25 @@
             everything is working. We will fix the log message eventually
             but it is purely a cosmetic issue.
         </p>
+
+        <h2 id="connectors">Connectors</h2>
+
+        <h3>
+	    How does Presto's built-in TPCH connector generate data
+            and how is this data "distributed" across nodes in Presto?
+            Is the TPCH connector faster than using TPCH data via
+            Hive?
+	</h3>
+
+        <p>
+	    The tpch connector generates data on-the-fly as you are
+	    querying it. The data isn't stored anywhere, so it is
+	    expected that querying it would be faster than reading
+	    data from Hive. The TCPH connector was created to provide
+	    a synthetic data source that could be used to explore
+	    Presto's SQL syntax and test a Presto installation.
+        </p>
+
     </div>
 
     <div class="rightcol">
@@ -130,6 +149,7 @@
             <li><a href="#running">Running Presto</a></li>
             <li><a href="#compatibility">Compatibility</a></li>
             <li><a href="#errors">Common Errors</a></li>
+	    <li><a href="#connectors">Connectors</a></li>
         </ul>
     </div>
 </div>
