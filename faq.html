@@ -112,23 +112,10 @@
             property is correct for your version of Hadoop.
         </p>
 
-        <h3>Why do I see a "<i>Cannot connect to discovery server for refresh</i>" error on startup?</h3>
-
-        <p>
-            This is usually not a problem. The error message appears because
-            the discovery client starts before the embedded discovery server
-            is ready. You will see a <code>succeeded for refresh</code> message
-            shortly after the error message in the logs which shows that
-            everything is working. We will fix the log message eventually
-            but it is purely a cosmetic issue.
-        </p>
-
 	<h2 id="client">Using the Presto Client</h2>
 
-	<h3>
-	    How can I export the result of the select statement into a
-	    file?
-        </h3>
+	<h3>How can I export the result of the select statement into a
+	    file?</h3>
 
 	<p>
 	    The Presto CLI supports exporting results to a file with
@@ -157,13 +144,11 @@
 
         <h2 id="errors">REST API</h2>
 
-        <h3>
-	    When calling the Statement resource
-	    at <code>/v1/statement</code> why does the result of a
+        <h3>When calling the Statement resource
+	    at <code>/v1/statement</code> why doesn't the result of a
 	    simple query like <code>select count(*)</code> return
 	    results? Why do I get a <code>nextUri</code> to fetch the
-	    result?
-	</h3>
+	    result?</h3>
 
 	<p>
 	    The Statement REST resource was designed to support
