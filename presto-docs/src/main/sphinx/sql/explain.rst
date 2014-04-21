@@ -19,10 +19,15 @@ Description
 
 Show the logical or distributed execution plan of a statement.
 
+Parameters
+----------
+
 Examples
 --------
 
-.. code-block:: none
+The following is the simplest explain plan.
+
+.. code-block:: sql
 
     presto:default> explain select count(*) from airline_data;
                          Query Plan                      
@@ -35,3 +40,5 @@ Examples
 	    original constraint=true] =>
             itinid := HiveColumnHandle{clientId=hive,
                 name=itinid, ordinalPosition=0, hiveType=STRING
+
+

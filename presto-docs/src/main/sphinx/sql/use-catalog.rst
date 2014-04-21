@@ -19,7 +19,7 @@ Parameters
 
 catalog
 
-    Name of the catalog
+    Name of Presto catalog
 
 Examples
 --------

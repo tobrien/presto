@@ -1,6 +1,6 @@
-==========
+============
 DROP TABLE
-==========
+============
 
 Synopsis
 --------
@@ -20,4 +20,3 @@ Examples
 Drop a table ``orders_by_date``::
 
     DROP TABLE orders_by_date
-
